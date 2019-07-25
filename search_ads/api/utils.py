@@ -32,8 +32,7 @@ def set_env(**environ):
 
 
 def api_call(endpoint, headers={}, json_data={}, method=requests.get,
-             api_version='v1', limit=1000, offset=0, org_id=None,
-             verbose=False):
+             api_version='v1', org_id=None, verbose=False):
     endpoint = "{}/{}".format(api_version, endpoint)
     # print("Endpoint:", endpoint)
     # print("Data:", json_data)
@@ -92,11 +91,8 @@ def api_call(endpoint, headers={}, json_data={}, method=requests.get,
 def api_get(endpoint, api_version='v1', limit=1000, offset=0, org_id=None,
             verbose=False):
     return api_call(
-        endpoint="{endpoint}?limit={limit}&offset={offset}".format(
-            endpoint=endpoint, limit=limit, offset=offset),
+        endpoint="{endpoint}?limit={limit}&offset={offset}".format(endpoint=endpoint, limit=limit, offset=offset),
         api_version=api_version,
-        limit=limit,
-        offset=offset,
         org_id=org_id,
         verbose=verbose
     )

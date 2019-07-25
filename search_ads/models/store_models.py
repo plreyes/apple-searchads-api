@@ -9,8 +9,9 @@ class SyncManager(Serializable):
     Synchronize Manager Object
     """
 
-    def __init__(self, certs):
+    def __init__(self, certs, api_version='v1'):
         self.certs = certs
+        self.api_version = api_version
         self.pending_actions = []
 
     def synchronize(self):
@@ -20,9 +21,9 @@ class SyncManager(Serializable):
                 # :TODO: actions could be executed in parallel
                 print(obj)
                 if obj == 'Campaign':
-                    obj = Campaign(**json.loads(json_data))
+                    obj = Campaign(api_version=self.api_version, **json.loads(json_data))
                 else:
-                    obj = AdGroup(**json.loads(json_data))
+                    obj = AdGroup(api_version=self.api_version, **json.loads(json_data))
                 obj.save(*args, **kwargs)
                 del self.pending_actions[i]
 
@@ -46,6 +47,7 @@ class AdGroup(Synchronizable, AppleSerializable):
                  keywords=[],
                  modificationTime=None,
                  endTime=None,
+                 api_version='v1',
                  **kwargs):
         """
         Creates an Ad Group object
@@ -66,8 +68,10 @@ class AdGroup(Synchronizable, AppleSerializable):
         :param keywords:
         :param modificationTime:
         :param endTime:
+        :param api_version:
         :param kwargs:
         """
+        self.api_version = api_version
         self._start_time = startTime
         self._storefronts = storefronts
         self.name = name
@@ -131,23 +135,21 @@ class AdGroup(Synchronizable, AppleSerializable):
                                  serialized object as arg
         :param verbose: Verbosity
         """
-        if force_sync or Synchronizable.synchronize(self,
-                                             save_callback=save_callback):
+        if force_sync or Synchronizable.synchronize(self, save_callback=save_callback):
             keywords_export = []
             for keyword in self.keywords:
                 keywords_export.extend(
                     keyword.prepare_for_bulk_export(self._campaign_id,
                                                     self._id))
             api_post("keywords/targeting/", data=keywords_export,
-                     verbose=verbose)
+                     api_version=self.api_version, verbose=verbose)
             if self._id:
                 api_put(
                     "campaigns/%s/adgroups/%s" % (self._campaign_id, self._id),
-                    data=self.__editable_fields(), verbose=verbose)
+                    data=self.__editable_fields(), api_version=self.api_version, verbose=verbose)
             else:
                 api_post("campaigns/%s/adgroups" % (self._campaign_id),
-                         data=self.__editable_fields(),
-                         verbose=verbose)
+                         data=self.__editable_fields(), api_version=self.api_version, verbose=verbose)
 
 
 class Campaign(Synchronizable, AppleSerializable):
@@ -169,6 +171,7 @@ class Campaign(Synchronizable, AppleSerializable):
                  storefront=[],
                  adGroups=[],
                  modificationTime=None,
+                 api_version='v1',
                  **kwargs):
         """
         Creates a Campaign object
@@ -188,8 +191,10 @@ class Campaign(Synchronizable, AppleSerializable):
         :param negativeKeywords:
         :param adGroups:
         :param modificationTime:
+        :param api_version:
         :param kwargs:
         """
+        self.api_version = api_version
         self._id = str(id)
         self._org_id = str(orgId)
         self._adam_id = str(adamId)
@@ -266,19 +271,18 @@ class Campaign(Synchronizable, AppleSerializable):
                                  serialized object as arg
         :param verbose: Verbosity
         """
-        if force_sync or Synchronizable.synchronize(self,
-                                             save_callback=save_callback):
+        if force_sync or Synchronizable.synchronize(self, save_callback=save_callback):
             if cascade:
                 for ad_group in self.ad_groups:
-                    ad_group.save(verbose=verbose)
+                    ad_group.save(api_version=self.api_version, verbose=verbose)
             if self._id:
                 api_put("campaigns/%s" % self._id,
                         data=self.__editable_fields(),
                         org_id=self._org_id,
-                        verbose=verbose)
+                        api_version=self.api_version, verbose=verbose)
             else:
                 api_post("campaigns/", data=self.__editable_fields(),
-                         org_id=self._org_id, verbose=verbose)
+                         org_id=self._org_id, api_version=self.api_version, verbose=verbose)
 
 
 class Keyword(object):

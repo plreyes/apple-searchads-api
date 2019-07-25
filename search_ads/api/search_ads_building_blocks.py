@@ -137,7 +137,7 @@ class SearchAds(object):
                     api_version=self.api_version,
                     limit=limit)['data']
         for raw_campaign in data:
-            campaigns.append(Campaign(**raw_campaign))
+            campaigns.append(Campaign(api_version=self.api_version, **raw_campaign))
         return campaigns
 
     def get_campaigns_by_name(self, name):
@@ -194,7 +194,8 @@ class SearchAds(object):
             selector=selector,
             group_by=group_by,
             return_records_with_no_metrics=return_records_with_no_metrics,
-            return_row_totals=return_row_totals
+            return_row_totals=return_row_totals,
+            api_version=self.api_version
         )
 
     def get_campaign_searchterms_report(self,
@@ -230,7 +231,8 @@ class SearchAds(object):
             selector=selector,
             group_by=group_by,
             return_records_with_no_metrics=return_records_with_no_metrics,
-            return_row_totals=return_row_totals
+            return_row_totals=return_row_totals,
+            api_version=self.api_version
         )
 
     def get_campaign_adgroups_report(self,
@@ -266,7 +268,8 @@ class SearchAds(object):
             selector=selector,
             group_by=group_by,
             return_records_with_no_metrics=return_records_with_no_metrics,
-            return_row_totals=return_row_totals
+            return_row_totals=return_row_totals,
+            api_version=self.api_version
         )
 
     def get_campaign_report(self,
@@ -300,7 +303,8 @@ class SearchAds(object):
             selector=selector,
             group_by=group_by,
             return_records_with_no_metrics=return_records_with_no_metrics,
-            return_row_totals=return_row_totals
+            return_row_totals=return_row_totals,
+            api_version=self.api_version
         )
 
     def create_campaign(self,
@@ -330,7 +334,7 @@ class SearchAds(object):
         :param active: whether the campaign is active of paused
         :return:
         """
-        ad_group = AdGroup()
+        ad_group = AdGroup(api_version=self.api_version)
         ad_group.name = ad_group_name
         ad_group.automated_keywords_opt_in = automatic_keywords_opt_in
         if cpa_goal:
@@ -349,7 +353,7 @@ class SearchAds(object):
         ad_group.keywords = []
         ad_group.status = "ENABLED" if active else "PAUSED"
 
-        campaign = Campaign()
+        campaign = Campaign(api_version=self.api_version)
         campaign._adam_id = app_id
         campaign._org_id = self.org_id
         campaign.name = campaign_name
