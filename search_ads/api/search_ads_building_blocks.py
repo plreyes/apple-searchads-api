@@ -26,21 +26,29 @@ class DataBase(object):
 
 
 class SearchAds(object):
-    def __init__(self, org_name, api_version='v1'):
+    def __init__(self, org_id=None, org_name=None, api_version='v1'):
         """
         Initialize the API object
+        :param org_id: Your organization id as found in the SearchAds interface
         :param org_name: Your organization name as found in the SearchAds interface
         :param api_version: The API version (current is v1)
         """
+        if org_id is None and org_name is None:
+            raise Exception("Organization Id or Organization Name is required")
+
         self.api_version = api_version
-        orgs = api_get("acls", api_version=self.api_version)
-        self.org_id = None
-        for org in orgs['data']:
-            if org['orgName'] == org_name:
-                self.org_id = org['orgId']
-        if not self.org_id:
-            raise Exception(
-                "Organization %s does not exist on this account" % org_name)
+
+        if org_id is not None:
+            self.org_id = org_id
+        else:
+            orgs = api_get("acls", api_version=self.api_version)
+            self.org_id = None
+            for org in orgs['data']:
+                if org['orgName'] == org_name:
+                    self.org_id = org['orgId']
+            if not self.org_id:
+                raise Exception(
+                    "Organization %s does not exist on this account" % org_name)
 
     def _call(self, endpoint, verbose=False):
         return \
