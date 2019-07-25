@@ -23,7 +23,7 @@ def get_campaign_adgroups_report(campaign,
                                  group_by=[],
                                  return_records_with_no_metrics=True,
                                  return_row_totals=False,
-                                 api_version='v1'):
+                                 api_version='v2'):
     return _report(
         campaign,
         path='adgroups',
@@ -50,7 +50,7 @@ def get_campaign_searchterms_report(campaign,
                                     group_by=[],
                                     return_records_with_no_metrics=True,
                                     return_row_totals=False,
-                                    api_version='v1'):
+                                    api_version='v2'):
     return _report(
         campaign,
         path='searchterms',
@@ -77,7 +77,7 @@ def get_campaign_keywords_report(campaign,
                                  group_by=[],
                                  return_records_with_no_metrics=True,
                                  return_row_totals=False,
-                                 api_version='v1'
+                                 api_version='v2'
                                  ):
     return _report(
         campaign,
@@ -104,7 +104,7 @@ def get_campaign_report(org_id=None,
                         group_by=[],
                         return_records_with_no_metrics=True,
                         return_row_totals=False,
-                        api_version='v1'):
+                        api_version='v2'):
     return _report(
         path='',
         org_id=org_id,
@@ -131,7 +131,7 @@ def _report(campaign=None,
             group_by=[],
             return_records_with_no_metrics=True,
             return_row_totals=False,
-            api_version='v1'):
+            api_version='v2'):
     if not selector:
         selector = {
             "orderBy": [

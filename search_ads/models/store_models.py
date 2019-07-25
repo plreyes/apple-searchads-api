@@ -9,7 +9,7 @@ class SyncManager(Serializable):
     Synchronize Manager Object
     """
 
-    def __init__(self, certs, api_version='v1'):
+    def __init__(self, certs, api_version='v2'):
         self.certs = certs
         self.api_version = api_version
         self.pending_actions = []
@@ -47,7 +47,7 @@ class AdGroup(Synchronizable, AppleSerializable):
                  keywords=[],
                  modificationTime=None,
                  endTime=None,
-                 api_version='v1',
+                 api_version='v2',
                  **kwargs):
         """
         Creates an Ad Group object
@@ -171,7 +171,7 @@ class Campaign(Synchronizable, AppleSerializable):
                  storefront=[],
                  adGroups=[],
                  modificationTime=None,
-                 api_version='v1',
+                 api_version='v2',
                  **kwargs):
         """
         Creates a Campaign object

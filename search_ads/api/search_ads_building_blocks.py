@@ -26,7 +26,7 @@ class DataBase(object):
 
 
 class SearchAds(object):
-    def __init__(self, org_id=None, org_name=None, api_version='v1'):
+    def __init__(self, org_id=None, org_name=None, api_version='v2'):
         """
         Initialize the API object
         :param org_id: Your organization id as found in the SearchAds interface
